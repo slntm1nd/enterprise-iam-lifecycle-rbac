@@ -1,0 +1,42 @@
+{
+  "iam_policy_name": "Automated_Onboarding_Logic",
+  "version": "2026-05",
+  "trigger": {
+    "source": "Workday_HR_System",
+    "event": "New_Hire_Created"
+  },
+  "actions": [
+    {
+      "step": 1,
+      "action": "Create_Identity_Object",
+      "target": "Microsoft_Entra_ID",
+      "attributes": {
+        "userPrincipalName": "${first_initial}${last_name}@enterprise.com",
+        "accountEnabled": true
+      }
+    },
+    {
+      "step": 2,
+      "action": "Assign_Birthright_Access",
+      "groups": [
+        "All_Employees_SG",
+        "MFA_Enforced_Standard_SG"
+      ]
+    },
+    {
+      "step": 3,
+      "action": "Evaluate_Department_RBAC",
+      "condition": "if department == 'Finance'",
+      "assign_groups": [
+        "Finance_Department_SG",
+        "NetSuite_Base_Access_SG"
+      ]
+    },
+    {
+      "step": 4,
+      "action": "Trigger_Notification",
+      "recipient": "IT_Service_Desk_ServiceNow",
+      "message": "Provisioning complete. Hardware delivery ticket requested."
+    }
+  ]
+}
