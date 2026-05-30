@@ -1,0 +1,9 @@
+Role,Department,System/Application,Access Level,MFA Required,Approval Needed
+HR_Specialist,Human Resources,Workday,Read/Write,Yes,HR Director
+HR_Specialist,Human Resources,Microsoft Entra ID,User Provisioning,Yes,IT Security
+Finance_Analyst,Finance,NetSuite,Read/Write,Yes,CFO
+Finance_Analyst,Finance,Corporate Banking,Initiate Payments,Yes,CFO + CEO
+IT_Support_L1,IT,ServiceNow,Triage/Resolve,Yes,IT Manager
+IT_Support_L1,IT,Microsoft Entra ID,Password Reset Only,Yes,IT Security
+All_Employees,All,Corporate Email,Read/Write,Yes,None
+All_Employees,All,Slack/Teams,Read/Write,No,None
