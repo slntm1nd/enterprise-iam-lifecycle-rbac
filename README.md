@@ -31,10 +31,76 @@ The goal is to eliminate privilege creep, enforce the **Principle of Least Privi
 
 ---
 
-## 3. Core Technical Artifacts
+## 📁 3. Core Technical Artifacts
 
-* **[RBAC Access Matrix (CSV)](./rbac-matrix.csv):** A defined breakdown mapping corporate roles to specific application entitlements, including required multi-factor authentication (MFA) parameters and business ownership approvals.
-* **[Automated Provisioning Logic (JSON)](./automation-logic.json):** A simulation of an IdP workflow policy engine routing attributes from HR systems down to directory services and ticketing queues.
+To demonstrate how theoretical identity frameworks translate into enterprise architecture, this repository contains production-ready configuration profiles:
+
+### 📊 1. Enterprise RBAC Access Matrix (`rbac-matrix.csv`)
+This matrix maps functional corporate roles to specific application entitlements, enforcing strict **Multi-Factor Authentication (MFA)** policies and multi-tiered business ownership approval workflows to prevent privilege creep.
+
+| Role | Department | System / Application | Access Level | MFA Required | Approval Needed |
+| :--- | :--- | :--- | :--- | :---: | :--- |
+| **HR_Specialist** | Human Resources | Workday | Read/Write | Yes | HR Director |
+| **HR_Specialist** | Human Resources | Microsoft Entra ID | User Provisioning | Yes | IT Security |
+| **Finance_Analyst** | Finance | NetSuite | Read/Write | Yes | CFO |
+| **Finance_Analyst** | Finance | Corporate Banking | Initiate Payments | Yes | CFO + CEO |
+| **IT_Support_L1** | IT | ServiceNow | Triage/Resolve | Yes | IT Manager |
+| **IT_Support_L1** | IT | Microsoft Entra ID | Password Reset Only | Yes | IT Security |
+| **All_Employees** | All | Corporate Email | Read/Write | Yes | None |
+| **All_Employees** | All | Slack / Teams | Read/Write | Yes | None |
+
+#### **Governance Alignment in the Matrix:**
+* **Separation of Duties (SoD):** High-risk transactions (such as initiating banking payments) are gated behind explicit, dual-authorization workflows (`CFO + CEO`).
+* **Principle of Least Privilege:** An `IT_Support_L1` technician can perform tactical actions like `Password Reset Only`, but has no dynamic rights to change directory architecture or provision new accounts without `IT Security` clearance.
+
+---
+
+### ⚙️ 2. Identity Provisioning Engine Architecture (`automation-logic.json`)
+This profile simulates how modern Identity-as-a-Service (IDaaS) workflow engines orchestrate webhooks and downstream provisioning steps using **Policy-as-Code (PoC)** logic parameters:
+
+```json
+{
+  "iam_policy_name": "Automated_Onboarding_Logic",
+  "version": "2026-05",
+  "trigger": {
+    "source": "Workday_HR_System",
+    "event": "New_Hire_Created"
+  },
+  "actions": [
+    {
+      "step": 1,
+      "action": "Create_Identity_Object",
+      "target": "Microsoft_Entra_ID",
+      "attributes": {
+        "userPrincipalName": "${first_initial}${last_name}@enterprise.com",
+        "accountEnabled": true
+      }
+    },
+    {
+      "step": 2,
+      "action": "Assign_Birthright_Access",
+      "groups": [
+        "All_Employees_SG",
+        "MFA_Enforced_Standard_SG"
+      ]
+    },
+    {
+      "step": 3,
+      "action": "Evaluate_Department_RBAC",
+      "condition": "if department == 'Finance'",
+      "assign_groups": [
+        "Finance_Department_SG",
+        "NetSuite_Base_Access_SG"
+      ]
+    },
+    {
+      "step": 4,
+      "action": "Trigger_Notification",
+      "recipient": "IT_Service_Desk_ServiceNow",
+      "message": "Provisioning complete. Hardware delivery ticket requested."
+    }
+  ]
+}
 
 ---
 
