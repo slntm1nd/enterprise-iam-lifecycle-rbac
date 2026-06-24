@@ -50,3 +50,42 @@ The goal is to eliminate privilege creep, enforce the **Principle of Least Privi
 * **NIST SP 800-63B:** Authentication and Lifecycle Management.
 * **ISO/IEC 27001 (A.9):** Access Control requirements.
 * **SOX / HIPAA Compliance:** Documentation of strict evidence trails for user provisioning and timely deprovisioning.
+
+* ## 🛠️ 5. Practical Lab Simulation & Security Auditing (Azure)
+
+To validate this IAM framework, I built a controlled cloud infrastructure staging environment within Microsoft Azure to simulate enterprise operations and verify audit trails.
+
+### Environment Topology
+* **Identity Provider (IdP):** Windows Server 2022 Domain Controller (`DC01`) managing the `corp.local` active directory forest.
+* **Endpoint Workspace:** Windows Client (`CLIENT01`) joined to the domain for interactive access validation.
+
+### Hands-on Implementation Workflows
+1. **Directory Taxonomy & Provisioning:** Created a dedicated Organizational Unit (OU) (`TestUsers`) within Active Directory Users and Computers (ADUC). Provisioned baseline identities (`Alice`, `Bob`, `Charlie`) with enforced initial credential parameters.
+2. **RBAC & Privilege Escalation Simulation:** Executed an administrative password reset workflow and modified local host security matrices (`sysdm.cpl`) on `CLIENT01` to explicitly grant `corp\alice` entry into the **Remote Desktop Users** local security group, isolating access tracking pathways.
+3. **Telemetry & Log Aggregation:** Conducted cross-system interactive logons to populate the Windows Security database, validating domain communication states and establishing a centralized audit baseline.
+
+---
+
+## 📊 6. Incident Monitoring & Event Log Correlation
+
+An IAM framework is only as secure as its visibility. To support audit readiness and incident detection patterns, I isolated and correlated specific high-value Microsoft Security Event IDs generated during the lab actions:
+
+| Event ID | Log Category | Technical Event Context | GRC / Audit Significance |
+| :---: | :--- | :--- | :--- |
+| **4720** | Account Management | A user account was created | Validates automated provisioning (**Joiner** phase audit). |
+| **4724** | Account Management | An attempt was made to reset an account's password | Monitors admin actions and detects potential credential hijacking. |
+| **4732** | Group Management | A member was added to a security group | Detects **Privilege Escalation** (e.g., granting RDP access to Alice). |
+| **4624** | Authentication | An account was successfully logged on | Confirms identity validation and logs explicit Logon Types. |
+| **4625** | Authentication | An account failed to log on | Core indicator for **Brute-Force** or password-guessing detection. |
+| **4672** | Authentication | Special privileges assigned to new logon | Flags user sessions carrying elevated administrative rights. |
+
+> 💾 **SIEM Readiness:** The raw directory telemetry database was structured and exported as `DC01-SecurityLogs.evtx`. This log architecture is specifically engineered to be ingested into SIEM environments (**Splunk Core Power User / Azure Sentinel**) for automated log parsing, compliance reporting, and alerting rules.
+>
+> ## 👥 Contact & Project Author
+* **Author:** Jane Nikolaichuk
+* **Role:** IAM & Access Governance Analyst (Charlotte, NC)
+* **LinkedIn:** www.linkedin.com/in/iamjanenikolaichuk
+* **GitHub Portfolio:** https://github.com/slntm1nd
+
+---
+**Skills Demonstrated:** Identity Lifecycle Management (JML) • Active Directory Administration (ADDS) • Role-Based Access Control (RBAC) • Windows Security Event Log Analysis • Compliance Tracking & Auditing • Incident Monitoring Focus
